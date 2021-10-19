@@ -1,8 +1,9 @@
 const { randomBytes } = require('crypto');
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
-
+app.use(cors());
 // As body parser is deprecated
 // const bodyParser = require('body-parser');
 // app.use(bodyParser.json());
