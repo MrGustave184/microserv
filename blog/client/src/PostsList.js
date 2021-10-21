@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import CommentCreate from './CommentCreate';
+import CommentsList from './CommentsList';
 import axios from 'axios';
 
 const PostsList = () => {
     const [posts, setPosts] = useState({});
 
     const fetchPosts = async () => {
-        const res  = await axios.get('http://localhost:4000/posts');
+        const res  = await axios.get('http://localhost:4002/posts');
 
         setPosts(res.data);
     };
@@ -17,6 +18,7 @@ const PostsList = () => {
 
     // Get array of values of the object
     const renderedPosts = Object.values(posts).map(post => {
+        console.log('posts', post)
         return (
             <div 
                 className="card" 
@@ -25,6 +27,9 @@ const PostsList = () => {
             >
                 <div className="card-body">
                     <h3>{post.title}</h3>
+                    <h4>Comments</h4>
+                    {/* <CommentsList postId={post.id}/> */}
+                    <CommentsList comments = {post.comments}/>
                     <CommentCreate postId={post.id}/>
                 </div>
             </div>
