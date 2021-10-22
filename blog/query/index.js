@@ -29,6 +29,20 @@ app.post('/events', (req, res) => {
         post.comments.push({ id, content, status });
     }
 
+    if(type === 'CommentUpdated') {
+        console.log('CommentUpdated', req.body)
+        const { id, postId, content, status } = data;
+
+        const post = posts[postId];
+
+        const comment = post.comments.find(comment => comment.id == id);
+        comment.status = status;
+
+        // We also update the content because CommentUpdated is a generic comment update event
+        // so we dont know what properties of the comment are being updated so we update everything
+        comment.content = content;
+    }
+
     console.log(posts);
 
     res.send({});
