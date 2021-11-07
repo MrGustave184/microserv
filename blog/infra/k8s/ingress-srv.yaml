@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # identify routing rules
+    nginx.ingress.kubernetes.io/use-regex: 'true' # allow use of regex in the paths
+spec:
+  rules:
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts/create
+            pathType: Prefix
+            backend:
+              service: 
+                name: posts-clusterip-srv
+                port: 
+                  number: 4000
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+          - path: /posts/?(.*)/comments # regex because kubernetes does not support parameter wildcards
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+          - path: / # /?(.*) if you are using a router. You must put this at the end as k8s ingress orders routes from most important to least important
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000

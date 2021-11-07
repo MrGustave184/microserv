@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 
@@ -16,17 +16,20 @@ const CommentsList = ({ comments }) => {
     //     fetchData();
     // }, []);
 
+    if(! comments)
+        comments = [];
+
     const renderedComments = comments.map(comment => {
         let content = '';
-        if(comment.status == 'pending') {
+        if(comment.status === 'pending') {
             content = 'Comment awaiting for moderation';
         }
 
-        if(comment.status == 'rejected') {
+        if(comment.status === 'rejected') {
             content = 'Comment rejected';
         }
 
-        if(comment.status == 'approved') {
+        if(comment.status === 'approved') {
             content = comment.content;
         }
 
