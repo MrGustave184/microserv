@@ -10,7 +10,7 @@ app.use(cors());
 // app.use(bodyParser.json());
 
 // extended true allows you to post nested objects
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // store all the posts in memory
@@ -30,10 +30,12 @@ app.post('/posts/create', async (req, res) => {
 
     posts[id] = { id, title };
 
-    await axios.post('http://event-bus-srv:4005/events', {
-        type: 'PostCreated',
-        data: { id, title } 
-    }).catch(err => console.log(err));
+    await axios
+        .post('http://event-bus-srv:4005/events', {
+            type: 'PostCreated',
+            data: { id, title },
+        })
+        .catch((err) => console.log(err));
 
     res.status(201).send(posts[id]);
 });
@@ -47,4 +49,4 @@ app.post('/events', (req, res) => {
 app.listen(4000, () => {
     console.log('new version v2');
     console.log('Posts service is listening on port 4000');
-})
+});
