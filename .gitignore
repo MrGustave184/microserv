@@ -1,3 +1,6 @@
+# microserv
+.vscode/
+
 # blog
 blog/client/node_modules
 blog/comments/node_modules
@@ -12,3 +15,14 @@ dockerapp/node_modules
 # typescript
 typescript-example/node_modules
 ts-features/node_modules
+
+# maps
+maps/.parcel-cache
+maps/src/.parcel-cache
+maps/src/.cache
+maps/src/dist
+maps/node_modules
+maps/dist
+
+# ticketing
+ticketing/auth/node_modules

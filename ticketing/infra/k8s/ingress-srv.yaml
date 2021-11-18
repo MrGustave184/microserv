@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # identify routing rules
+    nginx.ingress.kubernetes.io/use-regex: 'true' # allow use of regex in the paths
+spec:
+  rules:
+    - host: ticketing.test # made up domain name, you have to add the record in your hosts file in development environment
+      http:
+        paths:
+          - path: /api/users/?(.*)
+            pathType: Prefix
+            backend: 
+              service:
+                name: auth-srv # name of the service in the depl file
+                port:
+                  number: 3000

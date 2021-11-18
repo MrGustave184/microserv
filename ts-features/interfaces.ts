@@ -4,13 +4,13 @@ const oldCivic = {
     broken: true,
 };
 
-const printVehicle = (vehicle: { name: string, year: number, broken: boolean }): void => {
-    console.log(`Name: ${vehicle.name}`)
-    console.log(`Year: ${vehicle.year}`)
-    console.log(`Broken: ${vehicle.broken}`)
-}
+// const printVehicle = (vehicle: { name: string, year: number, broken: boolean }): void => {
+//     console.log(`Name: ${vehicle.name}`)
+//     console.log(`Year: ${vehicle.year}`)
+//     console.log(`Broken: ${vehicle.broken}`)
+// }
 
-printVehicle(oldCivic);
+// printVehicle(oldCivic);
 
 // better implementation of vehicle
 interface Vehicle {
@@ -39,4 +39,4 @@ const oldCivic2 = {
     }
 };
 
-printVehicle2(oldCivic2);
+// printVehicle2(oldCivic2);

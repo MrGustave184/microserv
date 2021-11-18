@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+
+  # Tell k8s how to find the pods that this deployments is in charge of
+  selector:
+    matchLabels:
+      app: auth
+
+  # Set the template on how the pods will be created by this deployment
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: david184/auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+# we dont specify a type of service beacuse we rely on the default
+# wich is the ClusterIP service
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

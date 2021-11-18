@@ -9,7 +9,7 @@ build:
     push: false # Do not push to dockerhub 
   artifacts:
     - image: david184/client
-      context: client
+      context: client # folder that contains the code for the image
       docker:
         dockerfile: Dockerfile
       sync:
