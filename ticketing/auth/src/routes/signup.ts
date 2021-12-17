@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator'
+import { body, validationResult } from 'express-validator';
+import { RequestValidationError } from '../errors/request-validation-error';
+import { DatabaseConnectionError } from '../errors/database-connection-error.ts';
+
 
 const router = express.Router();
 
@@ -15,9 +18,19 @@ router.post('/api/users/signup', [
     ],
 
     // we import the types Request and Response at the top
-    (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+
+        if(! errors.isEmpty()) {
+            // Send array of errors if any and return
+            throw new RequestValidationError(errors.array());
+        }
+
         const { email, password } = req.body;
-        res.send('api v2 signup -');
+
+        console.log('Creating user');
+        throw new DatabaseConnectionError();
+        res.send({});
     }
 );
 

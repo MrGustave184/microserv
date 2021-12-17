@@ -1,8 +1,12 @@
 import express from 'express';
+import 'express-async-errors';
+import mongoose from 'mongoose';
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
+import { errorHandler } from './middlewares/error-handling';
+import { NotFoundError } from './errors/not-found-error';
 
 const app = express();
 
@@ -15,6 +19,41 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 
+// Pass request to not existing route to the error handler
+// It goes at the end because routing is always parsed from top to bottom
+
+/** synchronous Route - error handling */
+// app.all('*', () => {
+//     throw new NotFoundError();
+// });
+
+/** asynchronous Route - error handling */
+app.all('*', async (req, res, next) => {
+    // Instead of throwing the error, we can pass it to express
+    // next(new NotFoundError());
+
+    // Or we can use the express-async-errors package and keep throwing the errors as normal
+    throw new NotFoundError();
+});
+
+// Middlewares
+app.use(errorHandler);
+
+const start = async () => {
+    /**
+     * To connect to out DB pod in k8s, we use the created mongo service name in the connection string along with the port
+     * /auth is the name of the database, and if doesnt exists, mongo will create it automatically
+     */
+    try {        
+        await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+        console.log('success on connecting to DB');
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+start();
+
 app.listen(3000, () => {
-    console.log('app listening on port 3000');
+    console.log('app listening on port 3000 with DB');
 });
