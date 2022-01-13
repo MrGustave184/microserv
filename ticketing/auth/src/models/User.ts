@@ -37,17 +37,12 @@ const userSchema  = new mongoose.Schema({
     }
 });
 
-const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
-// const User = mongoose.model<any, UserModel>('User', userSchema);
-
 // add a method to mongoose User model
-userSchema.statics.build = (attrs: UserAttrs) => {
+userSchema.statics.build = function (attrs: UserAttrs) {
     return new User(attrs);
 }
 
-const user = User.build({
-    email: 'test@test.com',
-    password: '123456'
-});
+const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
+// const User = mongoose.model<any, UserModel>('User', userSchema);
 
 export { User };

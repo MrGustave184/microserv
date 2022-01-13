@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { RequestValidationError } from '../errors/request-validation-error';
-import { DatabaseConnectionError } from '../errors/database-connection-error.ts';
+import { User } from '../models/User';
+import { BadRequestError } from '../errors/bad-request-error';  
+import { NotFoundError } from '../errors/not-found-error';
 
 
 const router = express.Router();
@@ -16,7 +18,6 @@ router.post('/api/users/signup', [
             .isLength({ min: 4, max: 20 })
             .withMessage('Password must be beetwen 4 and 20 characters')
     ],
-
     // we import the types Request and Response at the top
     async (req: Request, res: Response) => {
         const errors = validationResult(req);
@@ -28,9 +29,17 @@ router.post('/api/users/signup', [
 
         const { email, password } = req.body;
 
-        console.log('Creating user');
-        throw new DatabaseConnectionError();
-        res.send({});
+        const existingUser = await User.findOne({ email });
+
+        if(existingUser) {
+            throw new BadRequestError('Email already in use');
+        }
+
+        const user = User.build({ email, password });
+
+        await user.save();
+
+        res.status(201).send(user);
     }
 );
 

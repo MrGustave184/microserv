@@ -19,9 +19,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: auth-mongo-srv
+  name: auth-mongo-srv # Domain name wich we will connect to
 spec:
-  selector: 
+  selector: # Match the labels of the pods (in this case, metadata/labels/app: auth-mongo)
     app: auth-mongo
   ports:
     - name: db # just for logging purposes, not that important
