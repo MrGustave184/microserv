@@ -16,7 +16,13 @@ export class Password {
         // We tell typescript that buffer is of type Buffer
         const buffer = (await scryptAsync(password, salt, 64)) as Buffer;
 
-        return `${buffer.toString('hex')}.${salt}}`;
+        return `${buffer.toString('hex')}.${salt}`;
     }
-    static compare(storedPassword: string, suppliedPassword: string) {}
+    
+    static async compare(storedPassword: string, suppliedPassword: string) {
+        const [hashedPassword, salt] = storedPassword.split('.');
+        const buffer = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
+
+        return buffer.toString('hex') === hashedPassword;
+    }
 }

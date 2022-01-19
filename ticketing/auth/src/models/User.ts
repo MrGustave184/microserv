@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 // With this interface, we can allow typechecking user parameters to build a new user
 interface UserAttrs {
@@ -35,6 +36,28 @@ const userSchema  = new mongoose.Schema({
         type: String,
         required: true
     }
+});
+
+/**
+ * Hook/middleware that executes right before the document is stored in the DB
+ * The 'done' parameter is like 'next' in express middlewares, we have to call it
+ * at the end.
+ * 
+ * This cannot be an arrow function because we access the document attempted
+ * to be saved through 'this'
+ */
+userSchema.pre('save', async function (done) {
+
+    /**
+     * isModified('password') will return true even if the user is being
+     * created for the first time
+     */
+    if (this.isModified('password')) {
+        const hashed = await Password.toHash(this.get('password'));
+        this.set('password', hashed);
+    }
+
+    done();
 });
 
 // add a method to mongoose User model
