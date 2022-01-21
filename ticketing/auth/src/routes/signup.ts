@@ -55,11 +55,12 @@ router.post('/api/users/signup', [
          * So we set the object ourselves
          * 
          * The cookie-session library will take this token, serialize it and send it
-         * to the user's browser
+         * to the user's browser. For this cookie to be reflected in postman, we have to
+         * specify the https:// in the url.
+         * 
+         * The string contained in the cookie is a base64 encoded object that contains our JWT
          */
-        req.session = {
-            jwt: userJwt
-        };
+        req.session = { jwt: userJwt };
 
         res.status(201).send(user);
     }

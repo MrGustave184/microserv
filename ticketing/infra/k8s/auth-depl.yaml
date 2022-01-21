@@ -19,6 +19,15 @@ spec:
       containers:
         - name: auth
           image: david184/auth
+          env: # Set environment variables to be accesed inside the container
+            - name: JWT_KEY # Name to reference the variable inside the container
+              valueFrom: # Get the value of the variable
+                secretKeyRef: 
+                  name: jwt-secret # This is the same name we put in the command, else we get CreateContainerConfigError
+
+                  # As a secret can contain several key-value pairs, we specify 
+                  # the key that we want to get the value from
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service
