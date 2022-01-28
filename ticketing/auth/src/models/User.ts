@@ -36,6 +36,25 @@ const userSchema  = new mongoose.Schema({
         type: String,
         required: true
     }
+}, {
+        toJSON: {
+            /**
+             * 
+             * @param doc is the actual mongoose document 
+             * @param ret the plain JSON object that will be returned
+             */
+            transform(doc, ret) {
+                // this is js, not ts or mongoose. It deletes a property of an object
+                delete ret.password;
+
+                // remove the mongoose version key
+                delete ret.__v;
+
+                // rename the id to match other languages format
+                ret.id = ret._id;
+                delete ret._id;
+            }
+        }
 });
 
 /**

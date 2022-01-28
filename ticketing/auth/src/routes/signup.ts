@@ -3,13 +3,13 @@ import { body, validationResult } from 'express-validator';
 import { RequestValidationError } from '../errors/request-validation-error';
 import { User } from '../models/user';
 import { BadRequestError } from '../errors/bad-request-error';  
-import { NotFoundError } from '../errors/not-found-error';
 import jwt from 'jsonwebtoken';
+import { validateRequest } from '../middlewares/validate-request';
 
 
 const router = express.Router();
 
-// Second parameter is the route specific middlewares
+// Second parameter are the route specific middlewares
 router.post('/api/users/signup', [
         body('email')
             .isEmail() // check is email parameter is valid email
@@ -19,15 +19,9 @@ router.post('/api/users/signup', [
             .isLength({ min: 4, max: 20 })
             .withMessage('Password must be beetwen 4 and 20 characters')
     ],
+    validateRequest,
     // we import the types Request and Response at the top
     async (req: Request, res: Response) => {
-        const errors = validationResult(req);
-
-        if(! errors.isEmpty()) {
-            // Send array of errors if any and return
-            throw new RequestValidationError(errors.array());
-        }
-
         const { email, password } = req.body;
 
         const existingUser = await User.findOne({ email });
@@ -43,11 +37,18 @@ router.post('/api/users/signup', [
         /**
          * As we are not providing a callback to the sign method, it will behave 
          * synchronously
+         * 
+         * process.env.JWT_KEY!
+         * As typescript never assumes a env variable is defined, it will mark an error
+         * if we dont check for it with an if statement, but as we already did that in
+         * the index so we can catch the error when starting the service, the 
+         * exclamation at the end of the variable tells typescript to not worry 
+         * cheking it as we already did somewhere else 
          */
         const userJwt = jwt.sign({
             id: user.id,
             email: user.email
-        }, 'privateKeyASD');
+        }, process.env.JWT_KEY!);
 
         /**
          * As the type definition file for cookie-session doesnt recognize we have 
