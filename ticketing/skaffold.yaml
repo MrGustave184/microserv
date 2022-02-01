@@ -7,7 +7,7 @@ deploy:
 build:
   local:
     push: false # do not push the image to dockerhub
-  artifacts:
+  artifacts: # Sync files when changed
     - image: david184/auth
       context: auth # folder that contains the code for the image
       docker:
@@ -15,5 +15,14 @@ build:
       sync: # instruct skaffold on how to manage file change
         manual:
           - src: 'src/**/*.ts' # Watch for changes in any ts file inside src/ If match, copy the file directly into the pod.
+          # If doesn't match (example: changing package.json by installing a new library so the change was done in a .json and not .ts file) then rebuild the entire image and update the deployment
+            dest: .
+    - image: david184/client
+      context: client # folder that contains the code for the image
+      docker:
+        dockerfile: Dockerfile
+      sync: # instruct skaffold on how to manage file change
+        manual:
+          - src: '**/*.js' # Watch for changes in any ts file inside src/ If match, copy the file directly into the pod.
           # If doesn't match (example: changing package.json by installing a new library so the change was done in a .json and not .ts file) then rebuild the entire image and update the deployment
             dest: .

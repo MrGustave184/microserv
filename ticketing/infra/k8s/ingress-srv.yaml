@@ -17,3 +17,11 @@ spec:
                 name: auth-srv # name of the service in the depl file
                 port:
                   number: 3000
+          - path: /?(.*) # catch all (any path), ingress nginx match paths in order, thats why
+          # this catch all path must be at the end 
+            pathType: Prefix
+            backend: 
+              service:
+                name: client-srv # name of the service in the depl file
+                port:
+                  number: 3000

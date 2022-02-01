@@ -5,10 +5,53 @@
  *  --no-cache = help jest get along with ts
  *  "preset": "ts-jest" = help jest get along with ts
  */
-
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import request from "supertest";
 import { app } from '../app';
+
+/**
+ * register the signin property in the global nodejs namespace
+ */
+// declare global {
+//     namespace NodeJS {
+//         export interface Global {
+//             /**
+//              * For promises, the angle brackets indicates wich type they 
+//              * will resolve to
+//              */
+//             signin(): Promise<string[]>;
+//         }
+//     }
+// }
+
+/**
+ * register the signin property in the global nodejs namespace
+ */
+declare global {
+    var signin: () => Promise<string[]>;
+}
+
+/**
+ * This doesnt need to be a global function, it is just for convenience so we dont
+ * need to import it in every file
+ * 
+ * You export this function on its own file and then import it
+ * wherever you need it 
+ */
+global.signin = async () => {
+    const email = 'test@test.com';
+    const password = 'password';
+
+    const response = await request(app)
+        .post('/api/users/signup')
+        .send({ email, password })
+        .expect(201);
+
+    const cookie = response.get('Set-Cookie');
+
+    return cookie;
+}
 
 let mongo: any;
 
@@ -46,6 +89,11 @@ beforeEach(async () => {
  * Hook function to run after all of out tests
  */
 afterAll(async () => {
+    /**
+     * I think mongo operations are slow because I am using WSL
+     */
+    jest.setTimeout(10000);
+
     await mongo.stop();
     await mongoose.connection.close();
 })
