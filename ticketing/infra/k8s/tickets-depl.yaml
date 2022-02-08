@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
+  name: tickets-depl
 spec:
   replicas: 1
 
   # Tell k8s how to find the pods that this deployments is in charge of
   selector:
     matchLabels:
-      app: auth
+      app: tickets
 
   # Set the template on how the pods will be created by this deployment
   template:
     metadata:
       labels:
-        app: auth
+        app: tickets
     spec:
       containers:
-        - name: auth
-          image: david184/auth
+        - name: tickets
+          image: david184/tickets
           env: # Set environment variables to be accesed inside the container
             - name: MONGO_URI
-              value: 'mongodb://auth-mongo-srv:27017/auth'
+              value: 'mongodb://tickets-mongo-srv:27017/tickets'
             - name: JWT_KEY # Name to reference the variable inside the container
               valueFrom: # Get the value of the variable
                 secretKeyRef: 
@@ -35,15 +35,15 @@ apiVersion: v1
 kind: Service
 metadata:
 # this will be the domain for the clusterIP service
-# so other pods can reach the auth service inside the cluster
-  name: auth-srv
+# so other pods can reach the tickets service inside the cluster
+  name: tickets-srv
 spec:
 # we dont specify a type of service beacuse we rely on the default
 # wich is the ClusterIP service
   selector:
-    app: auth
+    app: tickets
   ports:
-    - name: auth
+    - name: tickets
       protocol: TCP
       port: 3000
       targetPort: 3000

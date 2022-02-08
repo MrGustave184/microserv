@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { currentUser } from '../middlewares/current-user';
+import { currentUser } from '@dkprojects/common';
 
 /**
  * As we have set our cookies in a way that cannot be referenced by the browser in
