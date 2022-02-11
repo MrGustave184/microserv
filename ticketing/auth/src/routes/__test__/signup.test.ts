@@ -11,78 +11,78 @@ it('returns a 201 on successful signup', async () => {
         .expect(201);
 });
 
-it('returns a 400 with an invalid email', async () => {
-    return request(app)
-        .post('/api/users/signup')
-        .send({
-            email: 'testtest.com',
-            password: 'password'
-        })
-        .expect(400);
-});
+// it('returns a 400 with an invalid email', async () => {
+//     return request(app)
+//         .post('/api/users/signup')
+//         .send({
+//             email: 'testtest.com',
+//             password: 'password'
+//         })
+//         .expect(400);
+// });
 
-it('returns a 400 with an invalid password', async () => {
-    return request(app)
-        .post('/api/users/signup')
-        .send({
-            email: 'test@test.com',
-            password: 'p'
-        })
-        .expect(400);
-});
+// it('returns a 400 with an invalid password', async () => {
+//     return request(app)
+//         .post('/api/users/signup')
+//         .send({
+//             email: 'test@test.com',
+//             password: 'p'
+//         })
+//         .expect(400);
+// });
 
-it('returns a 400 with missing email and/or password', async () => {
-    // For tests, we can return or await, either is fine
-    await request(app)
-        .post('/api/users/signup')
-        .send({
-            email: 'testtest.com',
-            password: ''
-        })
-        .expect(400);
+// it('returns a 400 with missing email and/or password', async () => {
+//     // For tests, we can return or await, either is fine
+//     await request(app)
+//         .post('/api/users/signup')
+//         .send({
+//             email: 'testtest.com',
+//             password: ''
+//         })
+//         .expect(400);
 
-    await request(app)
-        .post('/api/users/signup')
-        .send({
-            email: '',
-            password: 'password'
-        })
-        .expect(400);
-});
+//     await request(app)
+//         .post('/api/users/signup')
+//         .send({
+//             email: '',
+//             password: 'password'
+//         })
+//         .expect(400);
+// });
 
-it('disallows duplicates email', async () => {
-    /**
-     * Remember we run our hook before each test so the db is clean
-     */
-    await request(app)
-    .post('/api/users/signup')
-    .send({
-        email: 'test@test.com',
-        password: 'password'
-    })
-    .expect(201);
+// it('disallows duplicates email', async () => {
+//     /**
+//      * Remember we run our hook before each test so the db is clean
+//      */
+//     await request(app)
+//     .post('/api/users/signup')
+//     .send({
+//         email: 'test@test.com',
+//         password: 'password'
+//     })
+//     .expect(201);
 
-    await request(app)
-    .post('/api/users/signup')
-    .send({
-        email: 'test@test.com',
-        password: 'password'
-    })
-    .expect(400);
-});
+//     await request(app)
+//     .post('/api/users/signup')
+//     .send({
+//         email: 'test@test.com',
+//         password: 'password'
+//     })
+//     .expect(400);
+// });
 
-it('sets a cookie after successful signup', async () => {
-    // This holds the same response object as the real routes
-    const response = await request(app)
-    .post('/api/users/signup')
-    .send({
-        email: 'test@test.com',
-        password: 'password'
-    })
-    .expect(201);
+// it('sets a cookie after successful signup', async () => {
+//     // This holds the same response object as the real routes
+//     const response = await request(app)
+//     .post('/api/users/signup')
+//     .send({
+//         email: 'test@test.com',
+//         password: 'password'
+//     })
+//     .expect(201);
 
-    /**
-     * response.get() allows us to check the response headers
-     */
-    expect(response.get('Set-Cookie')).toBeDefined();
-})
+//     /**
+//      * response.get() allows us to check the response headers
+//      */
+//     expect(response.get('Set-Cookie')).toBeDefined();
+// })

@@ -77,6 +77,11 @@ beforeAll(async () => {
  * Hook function to run before each of out tests
  */
 beforeEach(async () => {
+    /**
+     * I think mongo operations are slow because I am using WSL
+     */
+    // jest.setTimeout(10000);
+
     // Delete data in each collection
     const collections = await mongoose.connection.db.collections();
 
@@ -92,8 +97,8 @@ afterAll(async () => {
     /**
      * I think mongo operations are slow because I am using WSL
      */
-    jest.setTimeout(10000);
+    //  jest.setTimeout(10000);
 
     await mongo.stop();
     await mongoose.connection.close();
-})
+});

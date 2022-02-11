@@ -13,7 +13,10 @@
 import express from 'express';
 import 'express-async-errors';
 import cookieSession from 'cookie-session';
-import { errorHandler, NotFoundError } from "@dkprojects/common";
+import { errorHandler, NotFoundError, currentUser } from "@dkprojects/common";
+import { createTicketRouter } from './routes/new';
+import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes/index';
 
 const app = express();
 /**
@@ -41,6 +44,14 @@ app.use(cookieSession({
      */
     secure: process.env.NODE_ENV !== 'test'
 }));
+
+// always after cookie-session because cookie-session sets req.session
+app.use(currentUser);
+
+// Routes
+app.use(createTicketRouter);
+app.use(showTicketRouter);
+app.use(indexTicketRouter);
 
 // Pass request to not existing route to the error handler
 // It goes at the end because routing is always parsed from top to bottom

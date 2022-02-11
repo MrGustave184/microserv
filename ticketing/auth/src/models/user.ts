@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 import { Password } from "../services/password";
 
+/**
+ * INTERFACES EXPLANATION:
+ * UserAttrs are the attributes needed to create a new user
+ * UserDoc are the attributes a user have after being created (remember
+ * that mongo adds things like __v version key, maybe created at and
+ * updated at)
+ * UserModel are all the attributes tied to the model itself
+ */
+
 // With this interface, we can allow typechecking user parameters to build a new user
 interface UserAttrs {
     email: string;
@@ -10,6 +19,7 @@ interface UserAttrs {
 /**
  * Extends the properties of the user model
  * adds a build method so typescript can type check
+ * Model represents the entire collection of data
  */
 // interface UserModel extends mongoose.Model<any> {
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -50,7 +60,7 @@ const userSchema  = new mongoose.Schema({
                 // remove the mongoose version key
                 delete ret.__v;
 
-                // rename the id to match other languages format
+                // rename the id to match other languages/databases format
                 ret.id = ret._id;
                 delete ret._id;
             }
@@ -80,6 +90,7 @@ userSchema.pre('save', async function (done) {
 });
 
 // add a method to mongoose User model
+// We add this so we can typecheck the user attributes
 userSchema.statics.build = function (attrs: UserAttrs) {
     return new User(attrs);
 }
